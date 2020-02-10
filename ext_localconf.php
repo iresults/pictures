@@ -9,11 +9,11 @@ call_user_func(
             'Iresults.Pictures',
             'Pictures',
             [
-                'Picture' => 'list, show'
+                'Album' => 'list, show'
             ],
             // non-cacheable actions
             [
-                'Picture' => ''
+                'Album' => ''
             ]
         );
 

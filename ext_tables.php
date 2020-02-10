@@ -16,5 +16,8 @@ call_user_func(
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_pictures_domain_model_picture', 'EXT:pictures/Resources/Private/Language/locallang_csh_tx_pictures_domain_model_picture.xlf');
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_pictures_domain_model_picture');
 
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_pictures_domain_model_album', 'EXT:pictures/Resources/Private/Language/locallang_csh_tx_pictures_domain_model_album.xlf');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_pictures_domain_model_album');
+
     }
 );

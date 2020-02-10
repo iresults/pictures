@@ -3,15 +3,15 @@
         {
             "config": {
                 "position": [
-                    139,
-                    150
+                    368,
+                    65
                 ]
             },
             "name": "New Model Object",
             "value": {
                 "actionGroup": {
-                    "_default0_list": true,
-                    "_default1_show": true,
+                    "_default0_list": false,
+                    "_default1_show": false,
                     "_default2_new_create": false,
                     "_default3_edit_update": false,
                     "_default4_delete": false,
@@ -94,11 +94,85 @@
                             "maxItems": "1",
                             "propertyDescription": "",
                             "propertyIsExcludeField": false,
-                            "propertyIsL10nModeExclude": false,
-                            "propertyIsRequired": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": true,
                             "propertyName": "file",
                             "propertyType": "Image",
                             "uid": "330722923254"
+                        }
+                    ]
+                },
+                "relationGroup": {
+                    "relations": []
+                }
+            }
+        },
+        {
+            "config": {
+                "position": [
+                    27,
+                    66
+                ]
+            },
+            "name": "New Model Object",
+            "value": {
+                "actionGroup": {
+                    "_default0_list": true,
+                    "_default1_show": true,
+                    "_default2_new_create": false,
+                    "_default3_edit_update": false,
+                    "_default4_delete": false,
+                    "customActions": []
+                },
+                "name": "Album",
+                "objectsettings": {
+                    "addDeletedField": true,
+                    "addHiddenField": true,
+                    "addStarttimeEndtimeFields": true,
+                    "aggregateRoot": true,
+                    "categorizable": false,
+                    "description": "Album",
+                    "mapToTable": "",
+                    "parentClass": "",
+                    "skipTypeConfiguration": false,
+                    "sorting": false,
+                    "type": "Entity",
+                    "uid": "1161293973457"
+                },
+                "propertyGroup": {
+                    "properties": [
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "Title",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": false,
+                            "propertyIsRequired": true,
+                            "propertyName": "title",
+                            "propertyType": "String",
+                            "uid": "811986989588"
+                        },
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "Storage",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": true,
+                            "propertyName": "storage",
+                            "propertyType": "Integer",
+                            "uid": "559323293136"
+                        },
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "Folder",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": true,
+                            "propertyName": "folder",
+                            "propertyType": "Text",
+                            "uid": "1069983885810"
                         }
                     ]
                 },
@@ -125,8 +199,8 @@
         },
         "extensionKey": "pictures",
         "name": "Pictures",
-        "originalExtensionKey": "",
-        "originalVendorName": "",
+        "originalExtensionKey": "pictures",
+        "originalVendorName": "Iresults",
         "persons": [
             {
                 "company": "iresults GmbH",
@@ -157,7 +231,7 @@
     },
     "wires": [],
     "log": {
-        "last_modified": "2020-02-10 12:44",
+        "last_modified": "2020-02-10 12:57",
         "extension_builder_version": "8.10.4",
         "be_user": "Daniel Corn (3)"
     }

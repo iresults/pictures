@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-10T12:44:47Z" product-name="pictures">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-10T12:57:06Z" product-name="pictures">
 		<header/>
 		<body>
 			<trans-unit id="tx_pictures_domain_model_picture">
@@ -23,6 +23,18 @@
 			</trans-unit>
 			<trans-unit id="tx_pictures_domain_model_picture.file">
 				<source>File</source>
+			</trans-unit>
+			<trans-unit id="tx_pictures_domain_model_album">
+				<source>Album</source>
+			</trans-unit>
+			<trans-unit id="tx_pictures_domain_model_album.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_pictures_domain_model_album.storage">
+				<source>Storage</source>
+			</trans-unit>
+			<trans-unit id="tx_pictures_domain_model_album.folder">
+				<source>Folder</source>
 			</trans-unit>
 			<trans-unit id="tx_pictures_pictures.name">
 				<source>Pictures</source>
