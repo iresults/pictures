@@ -1,0 +1,32 @@
+{
+    "name": "iresults/pictures",
+    "type": "typo3-cms-extension",
+    "description": "Another gallery extension",
+    "authors": [
+        {
+            "name": "Andreas Thurnheer-Meier",
+            "role": "Developer"
+        },
+        {
+            "name": "Daniel Corn",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "^8.7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Iresults\\Pictures\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Iresults\\Pictures\\Tests\\": "Tests"
+        }
+    },
+    "replace": {
+        "pictures": "self.version",
+        "typo3-ter/pictures": "self.version"
+    }
+}

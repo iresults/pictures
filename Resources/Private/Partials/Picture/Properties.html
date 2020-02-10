@@ -1,0 +1,52 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<table class="tx-pictures" >
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.title" />
+		</td>
+		<td>
+		{picture.title}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.headline" />
+		</td>
+		<td>
+		{picture.headline}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.caption" />
+		</td>
+		<td>
+		{picture.caption}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.byline" />
+		</td>
+		<td>
+		{picture.byline}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.copyright_string" />
+		</td>
+		<td>
+		{picture.copyrightString}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_pictures_domain_model_picture.file" />
+		</td>
+		<td>
+				<f:image src="{picture.file.originalResource.publicUrl}" width="200"/>
+		</td>
+	</tr>
+</table>
+</html>
