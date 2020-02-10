@@ -11,7 +11,8 @@ CREATE TABLE tx_pictures_domain_model_picture (
 	caption text,
 	byline varchar(255) DEFAULT '' NOT NULL,
 	copyright_string varchar(255) DEFAULT '' NOT NULL,
-	file int(11) unsigned NOT NULL default '0',
+    file_hash varchar(255) DEFAULT '' NOT NULL,
+    file_uid int(11) DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

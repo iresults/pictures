@@ -1,22 +1,14 @@
 <?php
+declare(strict_types=1);
+
 namespace Iresults\Pictures\Domain\Model;
 
-/***
- *
- * This file is part of the "Pictures" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2020 Andreas Thurnheer-Meier <tma@iresults.li>, iresults GmbH
- *           Daniel Corn <cod@iresults.li>, iresults GmbH
- *
- ***/
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * Album
  */
-class Album extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Album extends AbstractEntity
 {
     /**
      * Title

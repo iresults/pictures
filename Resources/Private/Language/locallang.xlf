@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-10T12:57:06Z" product-name="pictures">
-		<header/>
-		<body>
-			<trans-unit id="tx_pictures_domain_model_picture">
-				<source>Picture</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.headline">
-				<source>Headline</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.caption">
-				<source>Caption</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.byline">
-				<source>Byline</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.copyright_string">
-				<source>Copyright String</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_picture.file">
-				<source>File</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_album">
-				<source>Album</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_album.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_album.storage">
-				<source>Storage</source>
-			</trans-unit>
-			<trans-unit id="tx_pictures_domain_model_album.folder">
-				<source>Folder</source>
-			</trans-unit>
-		</body>
-	</file>
+    <file source-language="en" datatype="plaintext" original="messages" date="2020-02-10T12:57:06Z"
+          product-name="pictures">
+        <header/>
+        <body>
+            <trans-unit id="tx_pictures_domain_model_picture">
+                <source>Picture</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.headline">
+                <source>Headline</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.caption">
+                <source>Caption</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.byline">
+                <source>Byline</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.copyright_string">
+                <source>Copyright String</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.file_hash">
+                <source>File hash</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.file">
+                <source>File</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album">
+                <source>Album</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.storage">
+                <source>Storage</source>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.folder">
+                <source>Folder</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

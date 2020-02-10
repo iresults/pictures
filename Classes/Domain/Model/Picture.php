@@ -1,22 +1,17 @@
 <?php
+declare(strict_types=1);
+
 namespace Iresults\Pictures\Domain\Model;
 
-/***
- *
- * This file is part of the "Pictures" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2020 Andreas Thurnheer-Meier <tma@iresults.li>, iresults GmbH
- *           Daniel Corn <cod@iresults.li>, iresults GmbH
- *
- ***/
+use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * Meta data for a picture
  */
-class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Picture extends AbstractEntity
 {
     /**
      * Title
@@ -55,16 +50,53 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $copyrightString = '';
 
     /**
-     * file
+     * Underlying file's UID
      *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
-     * @cascade remove
+     * @var int
      * @validate NotEmpty
      */
-    protected $file = null;
+    protected $fileUid;
 
     /**
-     * Returns the title
+     * sha1 hash
+     *
+     * @var string
+     */
+    protected $fileHash = '';
+
+    /**
+     * @var File
+     */
+    protected $fileInstance;
+
+    /**
+     * Picture constructor
+     *
+     * @param File   $fileInstance
+     * @param string $title
+     * @param string $headline
+     * @param string $caption
+     * @param string $byline
+     * @param string $copyright
+     */
+    public function __construct(
+        File $fileInstance,
+        string $title = '',
+        string $headline = '',
+        string $caption = '',
+        string $byline = '',
+        string $copyright = ''
+    ) {
+        $this->title = $title;
+        $this->headline = $headline;
+        $this->caption = $caption;
+        $this->byline = $byline;
+        $this->copyrightString = $copyright;
+        $this->setFile($fileInstance);
+    }
+
+    /**
+     * Return the title
      *
      * @return string $title
      */
@@ -74,18 +106,7 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Sets the title
-     *
-     * @param string $title
-     * @return void
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * Returns the headline
+     * Return the headline
      *
      * @return string $headline
      */
@@ -95,18 +116,7 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Sets the headline
-     *
-     * @param string $headline
-     * @return void
-     */
-    public function setHeadline($headline)
-    {
-        $this->headline = $headline;
-    }
-
-    /**
-     * Returns the caption
+     * Return the caption
      *
      * @return string $caption
      */
@@ -116,18 +126,7 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Sets the caption
-     *
-     * @param string $caption
-     * @return void
-     */
-    public function setCaption($caption)
-    {
-        $this->caption = $caption;
-    }
-
-    /**
-     * Returns the byline
+     * Return the byline
      *
      * @return string $byline
      */
@@ -137,18 +136,7 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Sets the byline
-     *
-     * @param string $byline
-     * @return void
-     */
-    public function setByline($byline)
-    {
-        $this->byline = $byline;
-    }
-
-    /**
-     * Returns the copyrightString
+     * Return the copyright string
      *
      * @return string $copyrightString
      */
@@ -158,34 +146,89 @@ class Picture extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Sets the copyrightString
+     * Return the sha1 hash of the indexed file
      *
-     * @param string $copyrightString
-     * @return void
+     * @return string
      */
-    public function setCopyrightString($copyrightString)
+    public function getFileHash(): string
+    {
+        return $this->fileHash;
+    }
+
+    /**
+     * Return the underlying file's identifier
+     *
+     * @return int
+     */
+    public function getFileUid()
+    {
+        return $this->fileUid;
+    }
+
+    /**
+     * Return the file
+     *
+     * @return File|null $file
+     */
+    public function getFile()
+    {
+        if (!$this->fileInstance) {
+            try {
+                $this->fileInstance = ResourceFactory::getInstance()->getFileObject($this->fileUid);
+            } catch (FileDoesNotExistException $e) {
+            }
+        }
+
+        return $this->fileInstance;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @param string $headline
+     */
+    public function setHeadline(string $headline)
+    {
+        $this->headline = $headline;
+    }
+
+    /**
+     * @param string $caption
+     */
+    public function setCaption(string $caption)
+    {
+        $this->caption = $caption;
+    }
+
+    /**
+     * @param string $byline
+     */
+    public function setByline(string $byline)
+    {
+        $this->byline = $byline;
+    }
+
+    /**
+     * @param string $copyrightString
+     */
+    public function setCopyrightString(string $copyrightString)
     {
         $this->copyrightString = $copyrightString;
     }
 
     /**
-     * Returns the file
-     *
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $file
+     * @param File $file
      */
-    public function getFile()
+    public function setFile(File $file)
     {
-        return $this->file;
-    }
-
-    /**
-     * Sets the file
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $file
-     * @return void
-     */
-    public function setFile(\TYPO3\CMS\Extbase\Domain\Model\FileReference $file)
-    {
-        $this->file = $file;
+        $this->fileInstance = $file;
+        $this->fileUid = $file->getUid();
+        $this->fileHash = $file->getSha1();
     }
 }
