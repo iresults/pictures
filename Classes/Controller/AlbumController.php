@@ -1,5 +1,8 @@
 <?php
+
 namespace Iresults\Pictures\Controller;
+
+use Iresults\Pictures\Helper\QuerySettingsHelper;
 
 /***
  *
@@ -26,25 +29,24 @@ class AlbumController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     protected $albumRepository = null;
 
-    /**
-     * action list
-     *
-     * @return void
-     */
-    public function listAction()
+    protected function initializeAction()
     {
-        $albums = $this->albumRepository->findAll();
-        $this->view->assign('albums', $albums);
+        parent::initializeAction();
+        QuerySettingsHelper::makeRepositoryIgnoreStoragePage($this->albumRepository);
     }
 
     /**
      * action show
-     *
-     * @param \Iresults\Pictures\Domain\Model\Album $album
-     * @return void
      */
-    public function showAction(\Iresults\Pictures\Domain\Model\Album $album)
+    public function showAction()
     {
-        $this->view->assign('album', $album);
+        if (isset($this->settings['album'])) {
+            $album = $this->albumRepository->findByUid((int)$this->settings['album']);
+            $this->view->assign('album', $album);
+
+            return $this->view->render();
+        } else {
+            return '<div class="alert alert-danger">No album selected</div>';
+        }
     }
 }

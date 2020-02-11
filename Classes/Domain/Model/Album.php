@@ -98,6 +98,25 @@ class Album extends AbstractEntity
     }
 
     /**
+     * Return the Pictures/Index Entries belonging to this Album
+     *
+     * @return Picture[]
+     */
+    public function getPictures()
+    {
+        $variantConfigurations = $this->getVariantConfigurations();
+
+        return array_map(
+            function (Picture $picture) use ($variantConfigurations) {
+                $picture->setVariantConfigurations($variantConfigurations);
+
+                return $picture;
+            },
+            $this->pictureRepository->findByFiles($this->getFiles())
+        );
+    }
+
+    /**
      * @return VariantConfiguration[]
      */
     public function getVariantConfigurations(): array

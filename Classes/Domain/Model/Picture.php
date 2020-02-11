@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Iresults\Pictures\Domain\Model;
 
+use Iresults\Pictures\Domain\ValueObject\Variant;
+use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -70,6 +72,11 @@ class Picture extends AbstractEntity
     protected $fileInstance;
 
     /**
+     * @var VariantConfiguration[]
+     */
+    protected $variantConfigurations;
+
+    /**
      * Picture constructor
      *
      * @param File   $fileInstance
@@ -78,6 +85,7 @@ class Picture extends AbstractEntity
      * @param string $caption
      * @param string $byline
      * @param string $copyright
+     * @param array  $variantConfigurations
      */
     public function __construct(
         File $fileInstance,
@@ -85,7 +93,8 @@ class Picture extends AbstractEntity
         string $headline = '',
         string $caption = '',
         string $byline = '',
-        string $copyright = ''
+        string $copyright = '',
+        array $variantConfigurations = []
     ) {
         $this->title = $title;
         $this->headline = $headline;
@@ -93,6 +102,7 @@ class Picture extends AbstractEntity
         $this->byline = $byline;
         $this->copyrightString = $copyright;
         $this->setFile($fileInstance);
+        $this->variantConfigurations = $variantConfigurations;
     }
 
     /**
@@ -183,6 +193,34 @@ class Picture extends AbstractEntity
     }
 
     /**
+     * Return a Variant for each Variant Configuration
+     *
+     * @return Variant[]
+     */
+    public function getVariants(): array
+    {
+        $variants = [];
+        foreach ($this->getVariantConfigurations() as $key => $variantConfiguration) {
+            $variants[$key] = new Variant($this, $variantConfiguration);
+        }
+
+        return $variants;
+    }
+
+    /**
+     * @return VariantConfiguration[]
+     */
+    public function getVariantConfigurations(): array
+    {
+        return $this->variantConfigurations;
+    }
+
+    public function getName(): string
+    {
+        return $this->getFile()->getName();
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle(string $title)
@@ -230,5 +268,13 @@ class Picture extends AbstractEntity
         $this->fileInstance = $file;
         $this->fileUid = $file->getUid();
         $this->fileHash = $file->getSha1();
+    }
+
+    /**
+     * @param VariantConfiguration[] $variantConfigurations
+     */
+    public function setVariantConfigurations(array $variantConfigurations)
+    {
+        $this->variantConfigurations = $variantConfigurations;
     }
 }

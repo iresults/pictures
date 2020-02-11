@@ -1,0 +1,15 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:section name="main">
+    <section class="album album-{album.uid}">
+        <h2>{album.title}</h2>
+        <ul>
+            <f:for each="{album.pictures}" as="picture">
+                <li class="album-item">
+                    <f:render partial="Album/Item" section="main" arguments="{album:album,picture:picture}"/>
+                </li>
+            </f:for>
+        </ul>
+    </section>
+
+</f:section>
+</html>
