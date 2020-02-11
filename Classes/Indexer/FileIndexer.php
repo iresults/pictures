@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
-class FileIndex implements IndexerInterface
+class FileIndexer implements IndexerInterface
 {
     const FOLDER_NAME = 'ir_pictures';
 

@@ -10,7 +10,7 @@ use Prewk\Result;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 
-class AlbumIndex implements IndexerInterface
+class AlbumIndexer implements IndexerInterface
 {
     /**
      * @var ResourceFactory
@@ -23,7 +23,7 @@ class AlbumIndex implements IndexerInterface
     private $logger;
 
     /**
-     * @var FileIndex
+     * @var FileIndexer
      */
     private $fileIndexService;
 
@@ -32,12 +32,12 @@ class AlbumIndex implements IndexerInterface
      *
      * @param LoggerInterface $logger
      * @param ResourceFactory $resourceFactory
-     * @param FileIndex       $fileIndexService
+     * @param FileIndexer     $fileIndexService
      */
     public function __construct(
         LoggerInterface $logger,
         ResourceFactory $resourceFactory,
-        FileIndex $fileIndexService
+        FileIndexer $fileIndexService
     ) {
         $this->resourceFactory = $resourceFactory;
         $this->logger = $logger;

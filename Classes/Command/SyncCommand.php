@@ -6,8 +6,8 @@ namespace Iresults\Pictures\Command;
 use Iresults\Pictures\Domain\Model\Album;
 use Iresults\Pictures\Domain\Repository\AlbumRepository;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
-use Iresults\Pictures\Indexer\AlbumIndex;
-use Iresults\Pictures\Indexer\FileIndex;
+use Iresults\Pictures\Indexer\AlbumIndexer;
+use Iresults\Pictures\Indexer\FileIndexer;
 use Iresults\Pictures\Service\ImageVariantService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -64,26 +64,26 @@ class SyncCommand extends Command
         $repository->setDefaultQuerySettings($querySettings);
     }
 
-    private function getAlbumIndex(LoggerInterface $logger): AlbumIndex
+    private function getAlbumIndex(LoggerInterface $logger): AlbumIndexer
     {
         $om = $this->getObjectManager();
         $pictureRepository = $om->get(PictureRepository::class);
         $this->prepareRepository($pictureRepository);
 
-        return new AlbumIndex(
+        return new AlbumIndexer(
             $logger,
             $om->get(ResourceFactory::class),
             $this->getFileIndexService($logger)
         );
     }
 
-    private function getFileIndexService(LoggerInterface $logger): FileIndex
+    private function getFileIndexService(LoggerInterface $logger): FileIndexer
     {
         $om = $this->getObjectManager();
         $pictureRepository = $om->get(PictureRepository::class);
         $this->prepareRepository($pictureRepository);
 
-        return new FileIndex(
+        return new FileIndexer(
             $logger,
             $om->get(ResourceFactory::class),
             $pictureRepository,
