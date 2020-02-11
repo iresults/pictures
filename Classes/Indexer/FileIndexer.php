@@ -9,8 +9,8 @@ use Iresults\Pictures\Domain\Model\Picture;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
 use Iresults\Pictures\Exception\StorageDriverTypeException;
-use Iresults\Pictures\Service\ExifService;
 use Iresults\Pictures\Service\ImageVariantService;
+use Iresults\Pictures\Service\MetadataService;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Resource\File;
@@ -49,12 +49,18 @@ class FileIndexer implements IndexerInterface
     private $persistenceManager;
 
     /**
+     * @var MetadataService
+     */
+    private $metadataService;
+
+    /**
      * File Indexer constructor
      *
      * @param LoggerInterface             $logger
      * @param ResourceFactory             $resourceFactory
      * @param PictureRepository           $pictureRepository
      * @param ImageVariantService         $imageVariantService
+     * @param MetadataService             $metadataService
      * @param PersistenceManagerInterface $persistenceManager
      */
     public function __construct(
@@ -62,6 +68,7 @@ class FileIndexer implements IndexerInterface
         ResourceFactory $resourceFactory,
         PictureRepository $pictureRepository,
         ImageVariantService $imageVariantService,
+        MetadataService $metadataService,
         PersistenceManagerInterface $persistenceManager
     ) {
         $this->resourceFactory = $resourceFactory;
@@ -69,6 +76,7 @@ class FileIndexer implements IndexerInterface
         $this->imageVariantService = $imageVariantService;
         $this->logger = $logger;
         $this->persistenceManager = $persistenceManager;
+        $this->metadataService = $metadataService;
     }
 
     public function index(IndexerParameterInterface $parameter): Result
@@ -206,11 +214,11 @@ class FileIndexer implements IndexerInterface
 
     private function enrichPicture(Picture $picture, File $file)
     {
-        // TODO: Extract meta data
-        $picture->setByline('byline');
-        $picture->setHeadline('headline');
-        $picture->setCaption('caption');
-        $picture->setCopyrightString('copyright');
+        $metadata = $this->metadataService->extractMetadata($file);
+        $picture->setByline($metadata->getByline());
+        $picture->setHeadline($metadata->getHeadline());
+        $picture->setCaption($metadata->getCaption());
+        $picture->setCopyrightString($metadata->getCopyrightString());
         $picture->setFile($file);
     }
 

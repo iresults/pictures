@@ -10,6 +10,7 @@ use Iresults\Pictures\Helper\QuerySettingsHelper;
 use Iresults\Pictures\Indexer\AlbumIndexer;
 use Iresults\Pictures\Indexer\AlbumIndexerParameter;
 use Iresults\Pictures\Indexer\FileIndexer;
+use Iresults\Pictures\Service\MetadataService;
 use Iresults\Pictures\Service\ImageVariantService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -81,6 +82,7 @@ class SyncCommand extends Command
             $om->get(ResourceFactory::class),
             $pictureRepository,
             $om->get(ImageVariantService::class),
+            $om->get(MetadataService::class),
             $om->get(PersistenceManagerInterface::class)
         );
     }
