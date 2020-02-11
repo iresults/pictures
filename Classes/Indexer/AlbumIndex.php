@@ -6,12 +6,9 @@ namespace Iresults\Pictures\Indexer;
 use Exception;
 use InvalidArgumentException;
 use Iresults\Pictures\Domain\Model\Album;
-use Iresults\Pictures\Domain\Repository\PictureRepository;
-use Iresults\Pictures\Service\ImageVariantService;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 class AlbumIndex implements IndexerInterface
 {
@@ -21,24 +18,9 @@ class AlbumIndex implements IndexerInterface
     private $resourceFactory;
 
     /**
-     * @var PictureRepository
-     */
-    private $pictureRepository;
-
-    /**
-     * @var ImageVariantService
-     */
-    private $imageVariantService;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * @var PersistenceManagerInterface
-     */
-    private $persistenceManager;
 
     /**
      * @var FileIndex
@@ -48,26 +30,17 @@ class AlbumIndex implements IndexerInterface
     /**
      * Album indexer constructor
      *
-     * @param LoggerInterface             $logger
-     * @param ResourceFactory             $resourceFactory
-     * @param PictureRepository           $pictureRepository
-     * @param ImageVariantService         $imageVariantService
-     * @param PersistenceManagerInterface $persistenceManager
-     * @param FileIndex                   $fileIndexService
+     * @param LoggerInterface $logger
+     * @param ResourceFactory $resourceFactory
+     * @param FileIndex       $fileIndexService
      */
     public function __construct(
         LoggerInterface $logger,
         ResourceFactory $resourceFactory,
-        PictureRepository $pictureRepository,
-        ImageVariantService $imageVariantService,
-        PersistenceManagerInterface $persistenceManager,
         FileIndex $fileIndexService
     ) {
         $this->resourceFactory = $resourceFactory;
-        $this->pictureRepository = $pictureRepository;
-        $this->imageVariantService = $imageVariantService;
         $this->logger = $logger;
-        $this->persistenceManager = $persistenceManager;
         $this->fileIndexService = $fileIndexService;
     }
 

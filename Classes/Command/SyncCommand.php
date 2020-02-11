@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Iresults\Pictures\Command;
 
+use Iresults\Pictures\Domain\Model\Album;
 use Iresults\Pictures\Domain\Repository\AlbumRepository;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Indexer\AlbumIndex;
@@ -20,6 +21,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
+use function sprintf;
 
 class SyncCommand extends Command
 {
@@ -27,15 +29,26 @@ class SyncCommand extends Command
 
     protected function configure()
     {
+        $this->setDescription('Update Album indexes')
+            ->setHelp('Update the indexes and thumbnails of all Albums');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $albumRepository = $this->getObjectManager()->get(AlbumRepository::class);
         $this->prepareRepository($albumRepository);
+        $logger = $this->getLogger($output);
+        $albumIndex = $this->getAlbumIndex($logger);
+        /** @var Album $album */
         foreach ($albumRepository->findAll() as $album) {
-            $logger = $this->getLogger($output);
-            $result = $this->getAlbumIndexService($logger)->index($album);
+            $output->writeln(
+                sprintf(
+                    '<bg=green;fg=white;options=bold>Update index of album #%d: %s</>',
+                    $album->getUid(),
+                    $album->getTitle()
+                )
+            );
+            $result = $albumIndex->index($album);
             if ($result->isErr()) {
                 $this->outputResult($output, $result);
             } else {
@@ -51,7 +64,7 @@ class SyncCommand extends Command
         $repository->setDefaultQuerySettings($querySettings);
     }
 
-    private function getAlbumIndexService(LoggerInterface $logger): AlbumIndex
+    private function getAlbumIndex(LoggerInterface $logger): AlbumIndex
     {
         $om = $this->getObjectManager();
         $pictureRepository = $om->get(PictureRepository::class);
@@ -60,9 +73,6 @@ class SyncCommand extends Command
         return new AlbumIndex(
             $logger,
             $om->get(ResourceFactory::class),
-            $pictureRepository,
-            $om->get(ImageVariantService::class),
-            $om->get(PersistenceManagerInterface::class),
             $this->getFileIndexService($logger)
         );
     }

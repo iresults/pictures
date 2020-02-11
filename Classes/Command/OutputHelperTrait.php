@@ -21,13 +21,15 @@ trait OutputHelperTrait
      *
      * @param OutputInterface $output
      * @param Result          $result
-     * @noinspection PhpDocMissingThrowsInspection
+     * @param bool            $showOutputForNull
      */
-    public function outputResult(OutputInterface $output, Result $result)
+    public function outputResult(OutputInterface $output, Result $result, bool $showOutputForNull = false)
     {
         if ($result->isOk()) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $output->writeln('<info>' . $result->unwrap() . '</info>');
+            $inner = $result->ok()->unwrap();
+            if ($showOutputForNull || null !== $inner) {
+                $output->writeln('<info>' . $inner . '</info>');
+            }
         } else {
             /** @var Throwable $error */
             $error = $result->err()->unwrap();
@@ -47,11 +49,15 @@ trait OutputHelperTrait
      *
      * @param OutputInterface $output
      * @param Result[]        $resultCollection
+     * @param bool            $showOutputForNull
      */
-    public function outputResultCollection(OutputInterface $output, array $resultCollection)
-    {
+    public function outputResultCollection(
+        OutputInterface $output,
+        array $resultCollection,
+        bool $showOutputForNull = false
+    ) {
         foreach ($resultCollection as $result) {
-            $this->outputResult($output, $result);
+            $this->outputResult($output, $result, $showOutputForNull);
         }
     }
 }
