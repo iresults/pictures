@@ -17,12 +17,11 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use function is_array;
 use function sprintf;
 
 class FileIndexer implements IndexerInterface
 {
-    const FOLDER_NAME = 'ir_pictures';
-
     /**
      * @var ResourceFactory
      */
@@ -79,22 +78,27 @@ class FileIndexer implements IndexerInterface
         $this->metadataService = $metadataService;
     }
 
-    public function index(IndexerParameterInterface $parameter): Result
+    public function index(IndexerParameterInterface $parameter, ...$additional): Result
     {
         $file = $parameter->getInner();
         if (!($file instanceof File)) {
             throw new InvalidArgumentException('Argument for index must be an instance of File');
         }
+        if (!isset($additional[0]) || !is_array($additional[0])) {
+            throw new InvalidArgumentException('Argument 2 must be an array of Variant Configurations');
+        }
+        $variantConfigurations = $additional[0];
+
         $storageException = StorageDriverTypeException::assertSupportedDriverType($file->getStorage());
         if (null !== $storageException) {
             return new Result\Err($storageException);
         }
-        if ($this->fileNeedsIndexing($file)) {
+        if ($this->fileNeedsIndexing($file, $variantConfigurations)) {
             $this->logger->debug(sprintf('File %s needs to be (re)indexed', $file->getPublicUrl()));
 
-            $this->buildVariants($file);
+            $this->buildVariants($file, $variantConfigurations);
 
-            return $this->buildOrUpdatePicture($file);
+            return $this->buildOrUpdatePicture($file, $variantConfigurations);
         } else {
             $this->logger->debug('No reindexing necessary');
 
@@ -105,10 +109,11 @@ class FileIndexer implements IndexerInterface
     /**
      * Determine if the given File needs to be indexed
      *
-     * @param File $file
+     * @param File                   $file
+     * @param VariantConfiguration[] $variantConfigurations
      * @return bool
      */
-    public function fileNeedsIndexing(File $file): bool
+    public function fileNeedsIndexing(File $file, array $variantConfigurations): bool
     {
         $picture = $this->pictureRepository->findByFile($file);
         if ($picture === null) {
@@ -119,7 +124,7 @@ class FileIndexer implements IndexerInterface
             return true;
         }
 
-        foreach ($this->getVariantConfigurations() as $configuration) {
+        foreach ($variantConfigurations as $configuration) {
             $variantFileExists = $configuration->getFolder()->hasFile($file->getName());
             if (!$variantFileExists) {
                 return true;
@@ -130,26 +135,15 @@ class FileIndexer implements IndexerInterface
     }
 
     /**
-     * @return VariantConfiguration[]
+     * @param File  $file
+     * @param array $variantConfigurations
      */
-    private function getVariantConfigurations(): array
+    private function buildVariants(File $file, array $variantConfigurations)
     {
-        $folder = $this->getVariantParentFolder();
-
-        return [
-            VariantConfiguration::build($folder, '100m'),
-        ];
+        $this->imageVariantService->buildVariantsForImage($file, $variantConfigurations);
     }
 
-    /**
-     * @param File $file
-     */
-    private function buildVariants(File $file)
-    {
-        $this->imageVariantService->buildVariantsForImage($file, $this->getVariantConfigurations());
-    }
-
-    private function buildOrUpdatePicture(File $file): Result
+    private function buildOrUpdatePicture(File $file, array $variantConfigurations): Result
     {
         if ($this->pictureRepository->containsEntryForFile($file)) {
             $result = $this->updatePicture($file);
@@ -165,6 +159,7 @@ class FileIndexer implements IndexerInterface
 
         /** @var Picture $indexEntry */
         $indexEntry = $result->ok()->unwrap();
+        $indexEntry->setVariantConfigurations($variantConfigurations);
 
         try {
             $this->persistenceManager->persistAll();

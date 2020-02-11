@@ -46,7 +46,7 @@ class AlbumIndexer implements IndexerInterface
         $this->fileIndexService = $fileIndexService;
     }
 
-    public function index(IndexerParameterInterface $parameter): Result
+    public function index(IndexerParameterInterface $parameter, ...$additional): Result
     {
         $album = $parameter->getInner();
         if (!($album instanceof Album)) {
@@ -60,7 +60,10 @@ class AlbumIndexer implements IndexerInterface
         $fileIndexResults = [];
         foreach ($files as $file) {
             /** @var File $file */
-            $fileIndexResults[] = $this->fileIndexService->index(new FileIndexerParameter($file));
+            $fileIndexResults[] = $this->fileIndexService->index(
+                new FileIndexerParameter($file),
+                $album->getVariantConfigurations()
+            );
         }
 
         return new Result\Ok($fileIndexResults);
