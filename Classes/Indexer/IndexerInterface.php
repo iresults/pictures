@@ -7,5 +7,5 @@ use Prewk\Result;
 
 interface IndexerInterface
 {
-    public function index($instance): Result;
+    public function index(IndexerParameterInterface $instance): Result;
 }

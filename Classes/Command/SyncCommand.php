@@ -7,6 +7,7 @@ use Iresults\Pictures\Domain\Model\Album;
 use Iresults\Pictures\Domain\Repository\AlbumRepository;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Indexer\AlbumIndexer;
+use Iresults\Pictures\Indexer\AlbumIndexerParameter;
 use Iresults\Pictures\Indexer\FileIndexer;
 use Iresults\Pictures\Service\ImageVariantService;
 use Psr\Log\LoggerInterface;
@@ -48,7 +49,8 @@ class SyncCommand extends Command
                     $album->getTitle()
                 )
             );
-            $result = $albumIndex->index($album);
+            /** @var Album $album */
+            $result = $albumIndex->index(new AlbumIndexerParameter($album));
             if ($result->isErr()) {
                 $this->outputResult($output, $result);
             } else {

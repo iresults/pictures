@@ -6,8 +6,10 @@ namespace Iresults\Pictures\Indexer;
 use Exception;
 use InvalidArgumentException;
 use Iresults\Pictures\Domain\Model\Album;
+use Iresults\Pictures\Exception\StorageDriverTypeException;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 
 class AlbumIndexer implements IndexerInterface
@@ -44,8 +46,9 @@ class AlbumIndexer implements IndexerInterface
         $this->fileIndexService = $fileIndexService;
     }
 
-    public function index($album): Result
+    public function index(IndexerParameterInterface $parameter): Result
     {
+        $album = $parameter->getInner();
         if (!($album instanceof Album)) {
             throw new InvalidArgumentException('Argument for index must be an instance of Album');
         }
@@ -56,7 +59,8 @@ class AlbumIndexer implements IndexerInterface
         $files = $result->ok()->unwrap();
         $fileIndexResults = [];
         foreach ($files as $file) {
-            $fileIndexResults[] = $this->fileIndexService->index($file);
+            /** @var File $file */
+            $fileIndexResults[] = $this->fileIndexService->index(new FileIndexerParameter($file));
         }
 
         return new Result\Ok($fileIndexResults);
@@ -68,14 +72,18 @@ class AlbumIndexer implements IndexerInterface
      */
     private function getFilesOfAlbum(Album $album): Result
     {
-        $defaultStorage = $this->resourceFactory->getStorageObject($album->getStorage());
+        $storageObject = $this->resourceFactory->getStorageObject($album->getStorage());
+        $storageException = StorageDriverTypeException::assertSupportedDriverType($storageObject);
+        if (null !== $storageException) {
+            return new Result\Err($storageException);
+        }
         try {
-            $folder = $defaultStorage->getFolder($album->getFolder());
+            $folder = $storageObject->getFolder($album->getFolder());
         } catch (Exception $exception) {
             return new Result\Err($exception);
         }
         try {
-            $files = $defaultStorage->getFilesInFolder($folder);
+            $files = $storageObject->getFilesInFolder($folder);
         } catch (Exception $exception) {
             return new Result\Err($exception);
         }

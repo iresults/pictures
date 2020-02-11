@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use Iresults\Pictures\Domain\Model\Picture;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
+use Iresults\Pictures\Exception\StorageDriverTypeException;
+use Iresults\Pictures\Service\ExifService;
 use Iresults\Pictures\Service\ImageVariantService;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
@@ -15,6 +17,7 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use function sprintf;
 
 class FileIndexer implements IndexerInterface
 {
@@ -68,13 +71,18 @@ class FileIndexer implements IndexerInterface
         $this->persistenceManager = $persistenceManager;
     }
 
-    public function index($file): Result
+    public function index(IndexerParameterInterface $parameter): Result
     {
+        $file = $parameter->getInner();
         if (!($file instanceof File)) {
             throw new InvalidArgumentException('Argument for index must be an instance of File');
         }
-        if ($this->fileNeedsReindexing($file)) {
-            $this->logger->debug('File needs to be (re)indexed');
+        $storageException = StorageDriverTypeException::assertSupportedDriverType($file->getStorage());
+        if (null !== $storageException) {
+            return new Result\Err($storageException);
+        }
+        if ($this->fileNeedsIndexing($file)) {
+            $this->logger->debug(sprintf('File %s needs to be (re)indexed', $file->getPublicUrl()));
 
             $this->buildVariants($file);
 
@@ -86,7 +94,13 @@ class FileIndexer implements IndexerInterface
         }
     }
 
-    public function fileNeedsReindexing(File $file): bool
+    /**
+     * Determine if the given File needs to be indexed
+     *
+     * @param File $file
+     * @return bool
+     */
+    public function fileNeedsIndexing(File $file): bool
     {
         $picture = $this->pictureRepository->findByFile($file);
         if ($picture === null) {
