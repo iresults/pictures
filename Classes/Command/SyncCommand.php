@@ -6,6 +6,7 @@ namespace Iresults\Pictures\Command;
 use Iresults\Pictures\Domain\Model\Album;
 use Iresults\Pictures\Domain\Repository\AlbumRepository;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
+use Iresults\Pictures\Helper\QuerySettingsHelper;
 use Iresults\Pictures\Indexer\AlbumIndexer;
 use Iresults\Pictures\Indexer\AlbumIndexerParameter;
 use Iresults\Pictures\Indexer\FileIndexer;
@@ -21,7 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use function sprintf;
 
 class SyncCommand extends Command
@@ -37,10 +37,10 @@ class SyncCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $albumRepository = $this->getObjectManager()->get(AlbumRepository::class);
-        $this->prepareRepository($albumRepository);
+        QuerySettingsHelper::makeRepositoryIgnoreStoragePage($albumRepository);
         $logger = $this->getLogger($output);
         $albumIndex = $this->getAlbumIndex($logger);
-        /** @var Album $album */
+
         foreach ($albumRepository->findAll() as $album) {
             $output->writeln(
                 sprintf(
@@ -59,18 +59,9 @@ class SyncCommand extends Command
         }
     }
 
-    private function prepareRepository(RepositoryInterface $repository)
-    {
-        $querySettings = $repository->createQuery()->getQuerySettings();
-        $querySettings->setRespectStoragePage(false);
-        $repository->setDefaultQuerySettings($querySettings);
-    }
-
     private function getAlbumIndex(LoggerInterface $logger): AlbumIndexer
     {
         $om = $this->getObjectManager();
-        $pictureRepository = $om->get(PictureRepository::class);
-        $this->prepareRepository($pictureRepository);
 
         return new AlbumIndexer(
             $logger,
@@ -83,7 +74,7 @@ class SyncCommand extends Command
     {
         $om = $this->getObjectManager();
         $pictureRepository = $om->get(PictureRepository::class);
-        $this->prepareRepository($pictureRepository);
+        QuerySettingsHelper::makeRepositoryIgnoreStoragePage($pictureRepository);
 
         return new FileIndexer(
             $logger,
