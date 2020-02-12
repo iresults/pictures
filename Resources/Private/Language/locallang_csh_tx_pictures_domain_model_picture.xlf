@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-10T12:57:06Z" product-name="pictures">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-11T17:38:08Z" product-name="pictures">
 		<header/>
 		<body>
 			<trans-unit id="title.description">
@@ -18,8 +18,11 @@
 			<trans-unit id="copyright_string.description">
 				<source>Copyright</source>
 			</trans-unit>
-			<trans-unit id="file.description">
-				<source>file</source>
+			<trans-unit id="file_uid.description">
+				<source>File UID</source>
+			</trans-unit>
+			<trans-unit id="file_hash.description">
+				<source>File hash</source>
 			</trans-unit>
 		</body>
 	</file>

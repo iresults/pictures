@@ -16,6 +16,16 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Picture extends AbstractEntity
 {
     /**
+     * @var File
+     */
+    protected $fileInstance = null;
+
+    /**
+     * @var VariantConfiguration[]
+     */
+    protected $variantConfigurations = null;
+
+    /**
      * Title
      *
      * @var string
@@ -52,29 +62,19 @@ class Picture extends AbstractEntity
     protected $copyrightString = '';
 
     /**
-     * Underlying file's UID
+     * File UID
      *
      * @var int
      * @validate NotEmpty
      */
-    protected $fileUid;
+    protected $fileUid = null;
 
     /**
-     * sha1 hash
+     * File hash
      *
      * @var string
      */
     protected $fileHash = '';
-
-    /**
-     * @var File
-     */
-    protected $fileInstance;
-
-    /**
-     * @var VariantConfiguration[]
-     */
-    protected $variantConfigurations;
 
     /**
      * Picture constructor

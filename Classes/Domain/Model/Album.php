@@ -8,9 +8,10 @@ use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
 use Iresults\Pictures\Exception\StorageDriverTypeException;
 use Iresults\Pictures\Helper\QuerySettingsHelper;
+use Iresults\Pictures\Helper\VarientUtility;
 use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use function array_map;
 
@@ -19,7 +20,15 @@ use function array_map;
  */
 class Album extends AbstractEntity
 {
-    const FOLDER_NAME = 'ir_pictures';
+    /**
+     * @var PictureRepository
+     */
+    protected $pictureRepository = null;
+
+    /**
+     * @var ResourceFactory
+     */
+    protected $resourceFactory = null;
 
     /**
      * Title
@@ -46,22 +55,33 @@ class Album extends AbstractEntity
     protected $folder = '';
 
     /**
-     * @var PictureRepository
+     * Poster image of the Album
+     *
+     * @var FileReference
+     * @cascade remove
      */
-    protected $pictureRepository;
+    protected $poster = null;
 
     /**
-     * @var ResourceFactory
+     * Description
+     *
+     * @var string
      */
-    protected $resourceFactory;
+    protected $description = '';
 
-    /** @noinspection PhpUnused */
+    /**
+     * @noinspection PhpUnused
+     * @param PictureRepository $pictureRepository
+     */
     public function injectPictureRepository(PictureRepository $pictureRepository)
     {
         $this->pictureRepository = QuerySettingsHelper::makeRepositoryIgnoreStoragePage(clone $pictureRepository);
     }
 
-    /** @noinspection PhpUnused */
+    /**
+     * @noinspection PhpUnused
+     * @param ResourceFactory $resourceFactory
+     */
     public function injectResourceFactory(ResourceFactory $resourceFactory)
     {
         $this->resourceFactory = $resourceFactory;
@@ -121,25 +141,12 @@ class Album extends AbstractEntity
      */
     public function getVariantConfigurations(): array
     {
-        $folder = $this->getVariantParentFolder();
+        $folder = VarientUtility::getVariantParentFolder();
 
         return [
             'big'       => VariantConfiguration::build($folder, '1600m'),
             'thumbnail' => VariantConfiguration::build($folder, '560c', '560c'),
         ];
-    }
-
-    /**
-     * @return Folder
-     */
-    private function getVariantParentFolder()
-    {
-        $storage = $this->resourceFactory->getDefaultStorage();
-        if ($storage->hasFolder(self::FOLDER_NAME)) {
-            return $storage->getFolder(self::FOLDER_NAME);
-        } else {
-            return $storage->createFolder(self::FOLDER_NAME);
-        }
     }
 
     /**
@@ -159,5 +166,47 @@ class Album extends AbstractEntity
         } catch (Exception $exception) {
             return [];
         }
+    }
+
+    /**
+     * Returns the poster
+     *
+     * @return FileReference $poster
+     */
+    public function getPoster()
+    {
+        return $this->poster;
+    }
+
+    /**
+     * Sets the poster
+     *
+     * @param FileReference $poster
+     * @return void
+     */
+    public function setPoster(FileReference $poster)
+    {
+        $this->poster = $poster;
+    }
+
+    /**
+     * Returns the description
+     *
+     * @return string $description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Sets the description
+     *
+     * @param string $description
+     * @return void
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 }

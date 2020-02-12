@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2020-02-11T17:38:08Z" product-name="pictures">
+        <header/>
+        <body>
+            <trans-unit id="tx_pictures_domain_model_picture">
+                <source>Picture</source>
+                <target>Bild</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.headline">
+                <source>Headline</source>
+                <target>Headline</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.caption">
+                <source>Caption</source>
+                <target>Bildlegende</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.byline">
+                <source>Byline</source>
+                <target>Urheber</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.copyright_string">
+                <source>Copyright String</source>
+                <target>Copyright</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.file_uid">
+                <source>File UID</source>
+                <target>Datei UID</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_picture.file_hash">
+                <source>File Hash</source>
+                <target>Datei Hash</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album">
+                <source>Album</source>
+                <target>Album</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.storage">
+                <source>Storage</source>
+                <target>Storage</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.folder">
+                <source>Folder</source>
+                <target>Ordner</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.poster">
+                <source>Poster</source>
+                <target>Poster</target>
+            </trans-unit>
+            <trans-unit id="tx_pictures_domain_model_album.description">
+                <source>Description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="general.back_to_overview">
+                <source>Back to overview</source>
+                <target>Zurück zur Übersicht</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

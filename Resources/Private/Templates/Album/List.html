@@ -1,0 +1,29 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Default"/>
+
+<f:section name="content">
+    <section class="gallery album">
+        <ul>
+            <f:for each="{albums}" as="album">
+                <li class="album-item">
+                    <f:link.action action="show" arguments="{album : album}">
+                        <figure>
+                            <f:if condition="{album.poster}">
+                                <f:then>
+                                    <f:image class="album-poster-thumbnail"
+                                             image="{album.poster}"
+                                             width="560c"
+                                             height="560c"/>
+                                </f:then>
+                            </f:if>
+                            <figcaption class="album-caption">
+                                <h3>{album.title}</h3>
+                            </figcaption>
+                        </figure>
+                    </f:link.action>
+                </li>
+            </f:for>
+        </ul>
+    </section>
+</f:section>
+</html>

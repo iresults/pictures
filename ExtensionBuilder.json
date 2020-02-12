@@ -92,13 +92,24 @@
                         {
                             "allowedFileTypes": "",
                             "maxItems": "1",
-                            "propertyDescription": "",
+                            "propertyDescription": "File UID",
                             "propertyIsExcludeField": false,
                             "propertyIsL10nModeExclude": true,
                             "propertyIsRequired": true,
-                            "propertyName": "file",
-                            "propertyType": "Image",
+                            "propertyName": "fileUid",
+                            "propertyType": "Integer",
                             "uid": "330722923254"
+                        },
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "File hash",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": false,
+                            "propertyName": "fileHash",
+                            "propertyType": "String",
+                            "uid": "1299154141121"
                         }
                     ]
                 },
@@ -173,6 +184,28 @@
                             "propertyName": "folder",
                             "propertyType": "Text",
                             "uid": "1069983885810"
+                        },
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "Poster image of the Album",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": false,
+                            "propertyName": "poster",
+                            "propertyType": "Image",
+                            "uid": "870140652013"
+                        },
+                        {
+                            "allowedFileTypes": "",
+                            "maxItems": "1",
+                            "propertyDescription": "Description",
+                            "propertyIsExcludeField": false,
+                            "propertyIsL10nModeExclude": true,
+                            "propertyIsRequired": false,
+                            "propertyName": "description",
+                            "propertyType": "RichText",
+                            "uid": "1334594471832"
                         }
                     ]
                 },
@@ -220,7 +253,7 @@
                 "actions": {
                     "controllerActionCombinations": "",
                     "noncacheableActions": "",
-                    "switchableActions": ""
+                    "switchableActions": "Display Album\nAlbum->show;\nDisplay Gallery\nAlbum->list;Album->show;"
                 },
                 "description": "",
                 "key": "pictures",
@@ -231,7 +264,7 @@
     },
     "wires": [],
     "log": {
-        "last_modified": "2020-02-10 12:57",
+        "last_modified": "2020-02-11 05:38",
         "extension_builder_version": "8.10.4",
         "be_user": "Daniel Corn (3)"
     }

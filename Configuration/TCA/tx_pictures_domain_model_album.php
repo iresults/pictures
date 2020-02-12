@@ -16,14 +16,14 @@ return [
             'starttime' => 'starttime',
             'endtime'   => 'endtime',
         ],
-        'searchFields'             => 'title',
-        'iconfile'                 => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_album.gif',
+        'searchFields' => 'title,storage,folder,poster,description',
+        'iconfile' => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_album.svg'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, storage, folder, poster, description',
     ],
     'types'     => [
-        '1' => ['showitem' => 'title, storage, folder, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, starttime, endtime, sys_language_uid, l10n_parent, l10n_diffsource, hidden'],
+        '1' => ['showitem' => 'title, storage, folder, poster, description, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime'],
     ],
     'columns'   => [
         'sys_language_uid' => [
@@ -154,6 +154,69 @@ return [
                 'default'       => '',
             ],
         ],
+        'poster' => [
+            'exclude' => false,
+            'label' => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_album.poster',
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+                'poster',
+                [
+                    'appearance' => [
+                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                    ],
+                    'foreign_types' => [
+                        '0' => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_AUDIO => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => [
+                            'showitem' => '
+                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                            --palette--;;filePalette'
+                        ]
+                    ],
+                    'maxitems' => 1
+                ],
+                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+            ),
+        ],
+        'description' => [
+            'exclude' => false,
+            'label' => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_album.description',
+            'config' => [
+                'type' => 'text',
+                'enableRichtext' => true,
+                'richtextConfiguration' => 'default',
+                'fieldControl' => [
+                    'fullScreenRichtext' => [
+                        'disabled' => false,
+                    ],
+                ],
+                'cols' => 40,
+                'rows' => 15,
+                'eval' => 'trim',
+            ],
 
+        ],
     ],
 ];

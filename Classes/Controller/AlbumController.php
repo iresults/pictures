@@ -1,25 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Iresults\Pictures\Controller;
 
+use Iresults\Pictures\Domain\Model\Album;
 use Iresults\Pictures\Helper\QuerySettingsHelper;
-
-/***
- *
- * This file is part of the "Pictures" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2020 Andreas Thurnheer-Meier <tma@iresults.li>, iresults GmbH
- *           Daniel Corn <cod@iresults.li>, iresults GmbH
- *
- ***/
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * AlbumController
  */
-class AlbumController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class AlbumController extends ActionController
 {
     /**
      * albumRepository
@@ -37,16 +28,36 @@ class AlbumController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     /**
      * action show
+     *
+     * @param Album|null $album
+     * @return string
      */
-    public function showAction()
+    public function showAction(Album $album = null)
     {
-        if (isset($this->settings['album'])) {
+        $calledFromList = false;
+        if ($album) {
+            $calledFromList = true;
+        } elseif (isset($this->settings['album'])) {
             $album = $this->albumRepository->findByUid((int)$this->settings['album']);
-            $this->view->assign('album', $album);
-
-            return $this->view->render();
-        } else {
+        }
+        if (!$album) {
             return '<div class="alert alert-danger">No album selected</div>';
         }
+
+        $this->view->assign('album', $album);
+        $this->view->assign('showBackButton', $calledFromList);
+
+        return $this->view->render();
+    }
+
+    /**
+     * action list
+     *
+     * @return void
+     */
+    public function listAction()
+    {
+        $albums = $this->albumRepository->findAll();
+        $this->view->assign('albums', $albums);
     }
 }

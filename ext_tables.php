@@ -29,11 +29,11 @@ call_user_func(
         );
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_pictures_domain_model_album');
 
-        $pluginSignature = 'pictures_pictures';
+        $pluginSignature = str_replace('_', '', 'pictures') . '_pictures';
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
             $pluginSignature,
-            'FILE:EXT:pictures/Configuration/FlexForms/pictures.xml'
+            'FILE:EXT:pictures/Configuration/FlexForms/flexform_pictures.xml'
         );
     }
 );

@@ -16,14 +16,14 @@ return [
             'starttime' => 'starttime',
             'endtime'   => 'endtime',
         ],
-        'searchFields'             => 'title,headline,caption,byline,copyright_string,file',
-        'iconfile'                 => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_picture.gif',
+        'searchFields'             => 'title,headline,caption,byline,copyright_string,file_uid',
+        'iconfile'                 => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_picture.gif'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, headline, caption, byline, copyright_string, file',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, headline, caption, byline, copyright_string, file_uid',
     ],
     'types'     => [
-        '1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, headline, caption, byline, copyright_string, file, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, starttime, endtime'],
+        '1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, headline, caption, byline, copyright_string, file_uid, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, starttime, endtime'],
     ],
     'columns'   => [
         'sys_language_uid' => [
@@ -161,15 +161,6 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'file_hash'        => [
-            'exclude' => false,
-            'label'   => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_picture.file_hash',
-            'config'  => [
-                'type' => 'input',
-                'size' => 50,
-                'eval' => 'trim',
-            ],
-        ],
         'file_uid'             => [
             'exclude' => false,
             'label'   => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_picture.file',
@@ -221,6 +212,15 @@ return [
             //                            ],
             //                            $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
             //                        ),
+        ],
+        'file_hash'        => [
+            'exclude' => false,
+            'label'   => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_picture.file_hash',
+            'config'  => [
+                'type' => 'input',
+                'size' => 50,
+                'eval' => 'trim',
+            ],
         ],
 
     ],

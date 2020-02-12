@@ -9,6 +9,12 @@
                 </li>
             </f:for>
         </ul>
+
+        <f:if condition="{showBackButton}">
+            <f:link.action action="list">
+                <f:translate key="general.back_to_overview"/>
+            </f:link.action>
+        </f:if>
     </section>
 
 </f:section>
