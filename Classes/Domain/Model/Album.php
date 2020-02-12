@@ -57,8 +57,9 @@ class Album extends AbstractEntity
     /**
      * Poster image of the Album
      *
-     * @var FileReference
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
      * @cascade remove
+     * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
      */
     protected $poster = null;
 
