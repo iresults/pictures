@@ -6,12 +6,19 @@ namespace Iresults\Pictures\Indexer;
 use Exception;
 use InvalidArgumentException;
 use Iresults\Pictures\Domain\Model\Album;
+use Iresults\Pictures\Domain\ValueObject\AlbumResultInfo;
 use Iresults\Pictures\Exception\StorageDriverTypeException;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 
+/**
+ * Album Indexer
+ *
+ * @template   E of \Exception
+ * @implements IndexerInterface<AlbumResultInfo, E>
+ */
 class AlbumIndexer implements IndexerInterface
 {
     /**
@@ -46,27 +53,54 @@ class AlbumIndexer implements IndexerInterface
         $this->fileIndexService = $fileIndexService;
     }
 
+    /**
+     * @template     E
+     * @param IndexerParameterInterface $parameter
+     * @param mixed                     ...$additional
+     * @return Result
+     * @psalm-return Result<Album, E>
+     */
     public function index(IndexerParameterInterface $parameter, ...$additional): Result
     {
         $album = $parameter->getInner();
         if (!($album instanceof Album)) {
             throw new InvalidArgumentException('Argument for index must be an instance of Album');
         }
-        $result = $this->getFilesOfAlbum($album);
-        if ($result->isErr()) {
-            return $result;
+        $filesOfAlbum = $this->getFilesOfAlbum($album);
+        if ($filesOfAlbum->isErr()) {
+            return $filesOfAlbum;
         }
-        $files = $result->ok()->unwrap();
+        $files = $filesOfAlbum->ok()->unwrap();
         $fileIndexResults = [];
+        $pictures = [];
         foreach ($files as $file) {
             /** @var File $file */
-            $fileIndexResults[] = $this->fileIndexService->index(
+            /** @psalm-var Result<\Iresults\Pictures\Domain\ValueObject\PictureResultInfo, E> $result */
+            $result = $this->fileIndexService->index(
                 new FileIndexerParameter($file),
                 $album->getVariantConfigurations()
             );
+            $fileIndexResults[] = $result;
+            if ($result->isOk()) {
+                $pictures[] = $result->ok()->unwrap();
+            }
         }
 
-        return new Result\Ok($fileIndexResults);
+        $album->setPictures($pictures);
+
+        return new Result\Ok(new AlbumResultInfo($album, '', $fileIndexResults));
+    }
+
+    /**
+     * @template     E
+     * @param Result $x
+     * @psalm-param  Result<string,E> $res
+     * @return Result
+     * @psalm-return Result<int,E>
+     */
+    private function adsfa(Result $x): Result
+    {
+        return new Result\Ok('fdasfads');
     }
 
     /**

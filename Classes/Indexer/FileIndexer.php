@@ -7,6 +7,7 @@ use Exception;
 use InvalidArgumentException;
 use Iresults\Pictures\Domain\Model\Picture;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
+use Iresults\Pictures\Domain\ValueObject\PictureResultInfo;
 use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
 use Iresults\Pictures\Exception\StorageDriverTypeException;
 use Iresults\Pictures\Service\ImageVariantService;
@@ -14,12 +15,17 @@ use Iresults\Pictures\Service\MetadataService;
 use Prewk\Result;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use function is_array;
 use function sprintf;
 
+/**
+ * File Indexer
+ *
+ * @template   E of \Exception
+ * @implements IndexerInterface<PictureResultInfo, E>
+ */
 class FileIndexer implements IndexerInterface
 {
     /**
@@ -81,9 +87,11 @@ class FileIndexer implements IndexerInterface
     public function index(IndexerParameterInterface $parameter, ...$additional): Result
     {
         $file = $parameter->getInner();
+
         if (!($file instanceof File)) {
             throw new InvalidArgumentException('Argument for index must be an instance of File');
         }
+
         if (!isset($additional[0]) || !is_array($additional[0])) {
             throw new InvalidArgumentException('Argument 2 must be an array of Variant Configurations');
         }
@@ -91,18 +99,21 @@ class FileIndexer implements IndexerInterface
 
         $storageException = StorageDriverTypeException::assertSupportedDriverType($file->getStorage());
         if (null !== $storageException) {
+            /** @psalm-var E $storageException */
             return new Result\Err($storageException);
         }
         if ($this->fileNeedsIndexing($file, $variantConfigurations)) {
-            $this->logger->debug(sprintf('File %s needs to be (re)indexed', $file->getPublicUrl()));
+            $this->logger->debug(sprintf('File %s needs to be (re)indexed', (string)$file->getPublicUrl()));
 
             $this->buildVariants($file, $variantConfigurations);
 
             return $this->buildOrUpdatePicture($file, $variantConfigurations);
         } else {
             $this->logger->debug('No reindexing necessary');
+            /** @var Picture $picture */
+            $picture = $this->pictureRepository->findByFile($file);
 
-            return new Result\Ok('No reindexing necessary');
+            return new Result\Ok(new PictureResultInfo($picture, 'No reindexing necessary'));
         }
     }
 
@@ -137,22 +148,37 @@ class FileIndexer implements IndexerInterface
     /**
      * @param File  $file
      * @param array $variantConfigurations
+     * @return void
      */
     private function buildVariants(File $file, array $variantConfigurations)
     {
         $this->imageVariantService->buildVariantsForImage($file, $variantConfigurations);
     }
 
+    /**
+     * @param File                   $file
+     * @param VariantConfiguration[] $variantConfigurations
+     * @return Result
+     * @psalm-return Result<PictureResultInfo, E>
+     */
     private function buildOrUpdatePicture(File $file, array $variantConfigurations): Result
     {
         if ($this->pictureRepository->containsEntryForFile($file)) {
             $result = $this->updatePicture($file);
             if ($result->isErr()) {
+                /**
+                 * @var Result\Err $result
+                 * @psalm-var Result<PictureResultInfo, E> $result
+                 */
                 return $result;
             }
         } else {
             $result = $this->createPicture($file);
             if ($result->isErr()) {
+                /**
+                 * @var Result\Err $result
+                 * @psalm-var Result<PictureResultInfo, E> $result
+                 */
                 return $result;
             }
         }
@@ -165,13 +191,17 @@ class FileIndexer implements IndexerInterface
             $this->persistenceManager->persistAll();
 
             return new Result\Ok(
-                sprintf(
-                    'Stored index for file #%d %s',
-                    $indexEntry->getUid(),
-                    $indexEntry->getFile()->getPublicUrl()
+                new PictureResultInfo(
+                    $indexEntry,
+                    sprintf(
+                        'Stored index for file #%d %s',
+                        $indexEntry->getUid(),
+                        (string)$file->getPublicUrl()
+                    )
                 )
             );
         } catch (Exception $exception) {
+            /** @psalm-var E $exception */
             return new Result\Err($exception);
         }
     }
@@ -179,10 +209,12 @@ class FileIndexer implements IndexerInterface
     /**
      * @param File $file
      * @return Result
+     * @psalm-return Result<Picture, Exception>
      */
     private function updatePicture(File $file): Result
     {
         try {
+            /** @var Picture $picture */
             $picture = $this->pictureRepository->findByFile($file);
             $this->enrichPicture($picture, $file);
             $this->pictureRepository->update($picture);
@@ -193,7 +225,12 @@ class FileIndexer implements IndexerInterface
         }
     }
 
-    private function createPicture(File $file)
+    /**
+     * @param File $file
+     * @return Result
+     * @psalm-return Result<Picture, Exception>
+     */
+    private function createPicture(File $file): Result
     {
         $picture = new Picture($file);
 
@@ -207,6 +244,11 @@ class FileIndexer implements IndexerInterface
         }
     }
 
+    /**
+     * @param Picture $picture
+     * @param File    $file
+     * @return void
+     */
     private function enrichPicture(Picture $picture, File $file)
     {
         $metadata = $this->metadataService->extractMetadata($file);
@@ -215,18 +257,5 @@ class FileIndexer implements IndexerInterface
         $picture->setCaption($metadata->getCaption());
         $picture->setCopyrightString($metadata->getCopyrightString());
         $picture->setFile($file);
-    }
-
-    /**
-     * @return Folder
-     */
-    private function getVariantParentFolder()
-    {
-        $storage = $this->resourceFactory->getDefaultStorage();
-        if ($storage->hasFolder(self::FOLDER_NAME)) {
-            return $storage->getFolder(self::FOLDER_NAME);
-        } else {
-            return $storage->createFolder(self::FOLDER_NAME);
-        }
     }
 }

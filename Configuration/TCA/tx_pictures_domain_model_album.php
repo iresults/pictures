@@ -16,14 +16,14 @@ return [
             'starttime' => 'starttime',
             'endtime'   => 'endtime',
         ],
-        'searchFields' => 'title,storage,folder,poster,description',
-        'iconfile' => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_album.svg'
+        'searchFields'             => 'title,storage,folder,poster,description,pictures',
+        'iconfile'                 => 'EXT:pictures/Resources/Public/Icons/tx_pictures_domain_model_album.svg',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, storage, folder, poster, description',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, storage, folder, poster, description, pictures',
     ],
     'types'     => [
-        '1' => ['showitem' => 'title, storage, folder, poster, description, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime'],
+        '1' => ['showitem' => 'title, storage, folder, poster, description, pictures, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access, sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime'],
     ],
     'columns'   => [
         'sys_language_uid' => [
@@ -154,7 +154,7 @@ return [
                 'default'       => '',
             ],
         ],
-        'poster' => [
+        'poster'      => [
             'exclude' => false,
             'label' => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_album.poster',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
@@ -218,5 +218,32 @@ return [
             ],
 
         ],
+        'pictures'    => [
+            'exclude' => false,
+            'label'   => 'LLL:EXT:pictures/Resources/Private/Language/locallang_db.xlf:tx_pictures_domain_model_album.pictures',
+            'config'  => [
+                'type'          => 'select',
+                'renderType'    => 'selectMultipleSideBySide',
+                'foreign_table' => 'tx_pictures_domain_model_picture',
+                'MM'            => 'tx_pictures_album_picture_mm',
+                'size'          => 10,
+                'autoSizeMax'   => 30,
+                'maxitems'      => 9999,
+                'multiple'      => 0,
+                'fieldControl'  => [
+                    'editPopup'  => [
+                        'disabled' => false,
+                    ],
+                    'addRecord'  => [
+                        'disabled' => false,
+                    ],
+                    'listModule' => [
+                        'disabled' => true,
+                    ],
+                ],
+            ],
+
+        ],
+
     ],
 ];

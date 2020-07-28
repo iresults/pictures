@@ -210,7 +210,19 @@
                     ]
                 },
                 "relationGroup": {
-                    "relations": []
+                    "relations": [
+                        {
+                            "foreignRelationClass": "",
+                            "lazyLoading": false,
+                            "propertyIsExcludeField": false,
+                            "relationDescription": "Pictures in this album",
+                            "relationName": "pictures",
+                            "relationType": "manyToMany",
+                            "relationWire": "[wired]",
+                            "renderType": "selectMultipleSideBySide",
+                            "uid": "231720981319"
+                        }
+                    ]
                 }
             }
         }
@@ -262,9 +274,22 @@
         ],
         "vendorName": "Iresults"
     },
-    "wires": [],
+    "wires": [
+        {
+            "src": {
+                "moduleId": 1,
+                "terminal": "relationWire_0",
+                "uid": "231720981319"
+            },
+            "tgt": {
+                "moduleId": 0,
+                "terminal": "SOURCES",
+                "uid": "678807820427"
+            }
+        }
+    ],
     "log": {
-        "last_modified": "2020-02-11 05:38",
+        "last_modified": "2020-05-06 06:00",
         "extension_builder_version": "8.10.4",
         "be_user": "Daniel Corn (3)"
     }

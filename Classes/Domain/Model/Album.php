@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Iresults\Pictures\Domain\Model;
 
 use Exception;
+use InvalidArgumentException;
 use Iresults\Pictures\Domain\Repository\PictureRepository;
 use Iresults\Pictures\Domain\ValueObject\VariantConfiguration;
 use Iresults\Pictures\Exception\StorageDriverTypeException;
@@ -13,7 +14,9 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use function array_map;
+use function is_array;
 
 /**
  * Album
@@ -58,7 +61,7 @@ class Album extends AbstractEntity
      * Poster image of the Album
      *
      * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
-     * @cascade remove
+     * @cascade      remove
      * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
      */
     protected $poster = null;
@@ -69,6 +72,13 @@ class Album extends AbstractEntity
      * @var string
      */
     protected $description = '';
+
+    /**
+     * Pictures in this album
+     *
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Iresults\Pictures\Domain\Model\Picture>
+     */
+    protected $pictures = null;
 
     /**
      * @noinspection PhpUnused
@@ -209,5 +219,70 @@ class Album extends AbstractEntity
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * __construct
+     */
+    public function __construct()
+    {
+        //Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+    /**
+     * Initializes all ObjectStorage properties
+     * Do not modify this method!
+     * It will be rewritten on each save in the extension builder
+     * You may modify the constructor of this class instead
+     *
+     * @return void
+     */
+    protected function initStorageObjects()
+    {
+        $this->pictures = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
+
+    /**
+     * Adds a Picture
+     *
+     * @param \Iresults\Pictures\Domain\Model\Picture $picture
+     * @return void
+     */
+    public function addPicture(\Iresults\Pictures\Domain\Model\Picture $picture)
+    {
+        $this->pictures->attach($picture);
+    }
+
+    /**
+     * Removes a Picture
+     *
+     * @param \Iresults\Pictures\Domain\Model\Picture $pictureToRemove The Picture to be removed
+     * @return void
+     */
+    public function removePicture(\Iresults\Pictures\Domain\Model\Picture $pictureToRemove)
+    {
+        $this->pictures->detach($pictureToRemove);
+    }
+
+    /**
+     * Sets the pictures
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Iresults\Pictures\Domain\Model\Picture>|Picture[] $pictures
+     * @return void
+     */
+    public function setPictures($pictures)
+    {
+        if ($pictures instanceof ObjectStorage) {
+            $this->pictures = $pictures;
+        } elseif (is_array($pictures)) {
+            $objectStorage = new ObjectStorage();
+            foreach ($pictures as $picture) {
+                $objectStorage->attach($picture);
+            }
+            $this->pictures = $objectStorage;
+        } else {
+            throw new InvalidArgumentException('Argument "pictures" must be iterable');
+        }
     }
 }
