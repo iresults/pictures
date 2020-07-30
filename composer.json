@@ -16,7 +16,7 @@
         "php": "^7.0",
         "ext-exif": "*",
         "prewk/result": "^2.1.1",
-        "typo3/cms-core": "^8.7.1"
+        "typo3/cms-core": "^8.7.36"
     },
     "require-dev": {
         "vimeo/psalm": "^3.11.2"
