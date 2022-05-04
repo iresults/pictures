@@ -11,12 +11,6 @@ use Throwable;
 trait OutputHelperTrait
 {
     /**
-     * @inheritDoc
-     * @see \Symfony\Component\Console\Command\Command::getHelper
-     */
-    abstract public function getHelper($name);
-
-    /**
      * Output the given Result
      *
      * @param OutputInterface $output
