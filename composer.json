@@ -31,7 +31,11 @@
         }
     },
     "replace": {
-        "pictures": "self.version",
         "typo3-ter/pictures": "self.version"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "pictures"
+        }
     }
 }
